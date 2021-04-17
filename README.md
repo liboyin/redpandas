@@ -1,5 +1,7 @@
 # Redpandas
 
+![Build Status](https://github.com/liboyin/redpandas/workflows/tests/badge.svg)
+
 `Redpandas` solves a small problem: caching a `DataFrame` to Redis, and querying a subset of columns.
 
 This is achieved by storing the `DataFrame` by columns, and re-assembling the `DataFrame` at query time.
