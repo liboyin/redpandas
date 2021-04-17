@@ -4,10 +4,7 @@ on: [push]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -22,7 +19,7 @@ jobs:
       run: |
         conda env update --file environments/py38-base.yaml --name base
         pip install .[dev]
-        conda env export --no-builds
+        conda env export --name base --no-builds
     - name: Type check with MyPy
       run: |
         mypy .
