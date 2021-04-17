@@ -1,0 +1,12 @@
+dependencies:
+  - mypy
+  - nomkl
+  - numpy
+  - pandas
+  - pip
+  - pytest
+  - pytest-cov
+  - redis
+  - redis-py
+  - pip:
+    - pytest-randomly
