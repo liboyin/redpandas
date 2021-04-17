@@ -15,6 +15,6 @@ setup(
     # in conda, Redis server is redis; Redis client is redis-py
     install_requires=['numpy', 'pandas', 'redis'],
     extras_require={
-        'dev': ['mypy', 'pytest', 'pytest-cov', 'pytest-randomly', 'redis-server'],
+        'dev': ['mypy', 'pytest', 'pytest-cov', 'pytest-randomly'],
     },
 )
