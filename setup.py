@@ -11,10 +11,10 @@ setup(
     author_email='liboyin830@gmail.com',
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
-    # in pip, Redis server is redis-server; Redis client is redis
-    # in conda, Redis server is redis; Redis client is redis-py
+    # if Redis server is not installed already, add redis-server here
     install_requires=['numpy', 'pandas', 'redis'],
     extras_require={
+        # mypy might also need types-redis types-setuptools
         'dev': ['mypy', 'pytest', 'pytest-cov', 'pytest-randomly'],
     },
 )

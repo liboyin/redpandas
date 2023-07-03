@@ -10,14 +10,14 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: 3.11
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        conda env update --file environments/py38-base.yaml --name base
+        conda env update --file environments/py3-11-base.yaml --name base
         pip install .[dev]
         conda env export --name base --no-builds
     - name: Type check with MyPy

@@ -1,0 +1,11 @@
+dependencies:
+  - mypy
+  - numpy
+  - pandas
+  - pytest
+  - pytest-cov
+  - redis
+  - redis-server
+  - conda-forge::pytest-randomly
+  - conda-forge::types-redis
+  - conda-forge::types-setuptools
