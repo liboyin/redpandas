@@ -9,6 +9,7 @@ __all__ = ['save', 'fetch']
 
 
 def _encode(data: np.ndarray) -> List[str]:
+    # not pickled or compressed for human readability in Redis
     return [data.dtype.str] + list(map(str, data))
 
 
@@ -26,9 +27,11 @@ def save(client: Redis, identifier: str, df: pd.DataFrame) -> None:
         identifier (str): Unique identifier of DataFrame.
         df (pd.DataFrame): DataFrame to save.
     """
+    pipe = client.pipeline()
     for c in df:
-        client.rpush(f'{identifier}:{c}', *_encode(df[c].values))
-    client.rpush(f'{identifier}:_index', *_encode(df.index.values))
+        pipe.rpush(f'{identifier}:{c}', *_encode(df[c].values))
+    pipe.rpush(f'{identifier}:_index', *_encode(df.index.values))
+    pipe.execute()
 
 
 def _decode(data: List[bytes]) -> np.ndarray:
@@ -51,7 +54,10 @@ def fetch(client: Redis, identifier: str, *cols: str, pattern: str = '') -> pd.D
     static_query = {f'{identifier}:{c}' for c in cols}
     matched_query = {x.decode() for x in client.keys(f'{identifier}:{pattern}')} if pattern else set()
     col_query = sorted(static_query | matched_query)
-    data = [_decode(client.lrange(x, 0, -1)) for x in col_query]
+    pipe = client.pipeline()
+    for x in col_query:
+        pipe.lrange(x, 0, -1)
+    data = [_decode(x) for x in pipe.execute()]
     index = _decode(client.lrange(f'{identifier}:_index', 0, -1))
     prefix_len = len(identifier) + 1
     columns = sorted(set(cols) | {x[prefix_len:] for x in matched_query})
