@@ -14,7 +14,12 @@ def redis_client() -> Generator[Redis, None, None]:
     Popen('redis-server --save "" --appendonly no'.split(), stdout=PIPE, close_fds=True)
     client = Redis()
     time.sleep(1)
-    assert client.ping()
+    for _ in range(30):
+        if client.ping():
+            break
+        time.sleep(1)
+    else:  # still cannot connect after 30 seconds
+        raise TimeoutError(client)
     try:
         yield client
     finally:
