@@ -39,18 +39,18 @@ def _test_fetch_with_df(df: pd.DataFrame, redis_client: Redis, identifier: str) 
 
 
 def test_random_dataframe(redis_client: Redis) -> None:
-    df = pd.util.testing.makeDataFrame()
+    df = pd._testing.makeDataFrame()
     redpandas.save(redis_client, 'random_df', df)
     _test_fetch_with_df(df, redis_client, 'random_df')
 
 
 def test_missing_dataframe(redis_client: Redis) -> None:
-    df = pd.util.testing.makeMissingDataframe()
+    df = pd._testing.makeMissingDataframe()
     redpandas.save(redis_client, 'random_missing_df', df)
     _test_fetch_with_df(df, redis_client, 'random_missing_df')
 
 
 def test_mixed_dataframe(redis_client: Redis) -> None:
-    df = pd.util.testing.makeMixedDataFrame()
+    df = pd._testing.makeMixedDataFrame()
     redpandas.save(redis_client, 'random_mixed_df', df)
     _test_fetch_with_df(df, redis_client, 'random_mixed_df')
