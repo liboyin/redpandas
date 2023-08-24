@@ -1,3 +1,4 @@
+import time
 from typing import Any, Callable, Generator
 import pytest
 
@@ -11,6 +12,7 @@ import redpandas
 def redis_client() -> Generator[Redis, None, None]:
     import subprocess
     subprocess.Popen('redis-server --save "" --appendonly no'.split(), close_fds=True)
+    time.sleep(1)
     client = Redis()
     try:
         yield client
