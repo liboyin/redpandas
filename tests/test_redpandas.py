@@ -12,8 +12,9 @@ import redpandas
 def redis_client() -> Generator[Redis, None, None]:
     from subprocess import PIPE, Popen
     Popen('redis-server --save "" --appendonly no'.split(), stdout=PIPE, close_fds=True)
-    time.sleep(1)
     client = Redis()
+    time.sleep(1)
+    assert client.ping()
     try:
         yield client
     finally:
