@@ -10,8 +10,8 @@ import redpandas
 
 @pytest.fixture(scope='module')
 def redis_client() -> Generator[Redis, None, None]:
-    import subprocess
-    subprocess.Popen('redis-server --save "" --appendonly no'.split(), close_fds=True)
+    from subprocess import PIPE, Popen
+    Popen('redis-server --save "" --appendonly no'.split(), stdout=PIPE, close_fds=True)
     time.sleep(1)
     client = Redis()
     try:
