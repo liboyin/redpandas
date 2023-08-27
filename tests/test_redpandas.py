@@ -1,27 +1,37 @@
 import time
 from typing import Any, Callable, Generator
 import pytest
+from subprocess import PIPE, Popen
 
 import pandas as pd
 from redis import Redis
+from redis.exceptions import ConnectionError
 
 import redpandas
 
 
-@pytest.fixture(scope='module')
-def redis_client() -> Generator[Redis, None, None]:
-    from subprocess import PIPE, Popen
-    from redis.exceptions import ConnectionError
-    Popen('redis-server --save "" --appendonly no'.split(), stdout=PIPE, stderr=PIPE, close_fds=True)
-    client = Redis(socket_connect_timeout=1)
-    for _ in range(30):
+def start_server(client: Redis, retry: int = 30) -> Popen:
+    server = Popen('redis-server --save "" --appendonly no'.split(), stdout=PIPE, stderr=PIPE, close_fds=True)
+    for _ in range(retry):
         try:
             if client.ping():
                 break
         except ConnectionError:
             time.sleep(1)
     else:  # still cannot connect after 30 seconds
+        server.terminate()
+        server.wait()
         raise TimeoutError(client)
+    return server
+
+
+@pytest.fixture(scope='module')
+def redis_client() -> Generator[Redis, None, None]:
+    client = Redis()
+    try:
+        client.ping()
+    except ConnectionError:
+        start_server(client)
     try:
         yield client
     finally:
