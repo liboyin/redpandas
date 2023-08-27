@@ -36,7 +36,7 @@ def save(client: Redis, identifier: str, df: pd.DataFrame) -> None:
 
 def _decode(data: List[bytes]) -> np.ndarray:
     data_str = [x.decode() for x in data]
-    return np.array(data_str[1:]).astype(data_str[0])
+    return np.array(data_str[1:], dtype=data_str[0])
 
 
 def fetch(client: Redis, identifier: str, *cols: str, pattern: str = '') -> pd.DataFrame:
@@ -59,6 +59,6 @@ def fetch(client: Redis, identifier: str, *cols: str, pattern: str = '') -> pd.D
         pipe.lrange(x, 0, -1)
     data = [_decode(x) for x in pipe.execute()]
     index = _decode(client.lrange(f'{identifier}:_index', 0, -1))
-    prefix_len = len(identifier) + 1
+    prefix_len = len(identifier) + 1  # '{identifier}:'
     columns = sorted(set(cols) | {x[prefix_len:] for x in matched_query})
     return pd.DataFrame(zip(*data), index=index, columns=columns)
