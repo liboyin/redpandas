@@ -25,5 +25,5 @@ jobs:
         mypy src/redpandas/__init__.py
     - name: Test with pytest
       run: |
-        redis-server --save "" --appendonly no
+        redis-server --save "" --appendonly no --daemonize yes
         pytest
